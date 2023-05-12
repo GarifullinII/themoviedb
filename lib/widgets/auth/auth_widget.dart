@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/widgets/main_screen/main_screen_widget.dart';
 import '../../theme/app_button_style.dart';
 
 class AuthWidget extends StatefulWidget {
@@ -93,10 +92,7 @@ class _FormWidgetState extends State<_FormWidget> {
     final passwordText = _passwordTextController.text;
 
     if (loginText == 'admin' && passwordText == 'admin') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreenWidget()),
-      );
+      Navigator.pushNamed(context, '/main_screen');
     } else {
       print('Error login or password');
     }
