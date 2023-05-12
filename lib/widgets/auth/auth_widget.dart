@@ -13,7 +13,7 @@ class _AuthWidgetState extends State<AuthWidget> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Войти в свою учётную запись',
+          'Login to your account',
         ),
       ),
       body: const SingleChildScrollView(
@@ -37,26 +37,36 @@ class _LoginWidget extends StatelessWidget {
         horizontal: 16.0,
       ),
       child: Column(
-        children: const [
-          SizedBox(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
             height: 25.0,
           ),
-          Text(
-            'Чтобы пользоваться правкой и возможностями рейтинга TMDB, а также получить персональные рекомендации, необходимо войти в свою учётную запись. '
-            'Если у вас нет учётной записи, её регистрация является бесплатной и простой.',
+          const Text(
+            'In order to use the editing and rating capabilities of TMDB, as well as get personal recommendations you will need to login to your account. If you do not have an account, registering for an account is free and simple. '
+            'Click to get started.',
             style: textStyle,
           ),
-          SizedBox(
-            height: 25.0,
+          TextButton(
+            onPressed: () {},
+            child: const Text('Get started'),
           ),
-          Text(
-            'Если Вы зарегистрировались, но не получили письмо для подтверждения, нажмите здесь, чтобы отправить письмо повторно.',
+          const SizedBox(
+            height: 10.0,
+          ),
+          const Text(
+            'If you signed up but didn\'t get your verification email, '
+                'click here to have it resent.',
             style: textStyle,
           ),
-          SizedBox(
-            height: 25.0,
+          TextButton(
+            onPressed: () {},
+            child: const Text('Resent'),
           ),
-          _FormWidget(),
+          const SizedBox(
+            height: 10.0,
+          ),
+          const _FormWidget(),
         ],
       ),
     );
@@ -87,11 +97,16 @@ class _FormWidgetState extends State<_FormWidget> {
       ),
       isCollapsed: true,
     );
+    const color = Color(0xFF01B4E4);
+    const textStyleButton = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Имя пользователя',
+          'User name',
           style: textStyle,
         ),
         const SizedBox(
@@ -104,7 +119,7 @@ class _FormWidgetState extends State<_FormWidget> {
           height: 20.0,
         ),
         const Text(
-          'Пароль',
+          'Password',
           style: textStyle,
         ),
         const SizedBox(
@@ -112,22 +127,40 @@ class _FormWidgetState extends State<_FormWidget> {
         ),
         const TextField(
           decoration: textFieldDecorator,
+          obscureText: true,
+        ),
+        const SizedBox(
+          height: 20.0,
         ),
         Row(
           children: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {},
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(color),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                padding: MaterialStateProperty.all(
+                  const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                ),
+              ),
               child: const Text(
-                'Войти',
+                'Login',
               ),
             ),
             const SizedBox(
-              width: 10.0,
+              width: 20.0,
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () {},
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(color),
+                textStyle: MaterialStateProperty.all(textStyleButton),
+              ),
               child: const Text(
-                'Сбросить пароль',
+                'Reset password',
               ),
             ),
           ],
