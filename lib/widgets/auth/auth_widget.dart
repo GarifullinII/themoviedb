@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/app_button_style.dart';
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -50,18 +51,20 @@ class _LoginWidget extends StatelessWidget {
           TextButton(
             onPressed: () {},
             child: const Text('Get started'),
+            style: AppButtonStyle.linkButton,
           ),
           const SizedBox(
             height: 10.0,
           ),
           const Text(
             'If you signed up but didn\'t get your verification email, '
-                'click here to have it resent.',
+            'click here to have it resent.',
             style: textStyle,
           ),
           TextButton(
             onPressed: () {},
             child: const Text('Resent'),
+            style: AppButtonStyle.linkButton,
           ),
           const SizedBox(
             height: 10.0,
@@ -81,6 +84,25 @@ class _FormWidget extends StatefulWidget {
 }
 
 class _FormWidgetState extends State<_FormWidget> {
+  final _loginTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
+
+  void _auth() {
+    final loginText = _loginTextController.text;
+    final passwordText = _passwordTextController.text;
+
+    if (loginText == 'admin' && passwordText == 'admin') {
+      print('Open app');
+    } else {
+      print('Error login or password');
+    }
+    setState(() {});
+  }
+
+  void _resetPassword() {
+    print('reset password');
+  }
+
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
@@ -98,10 +120,6 @@ class _FormWidgetState extends State<_FormWidget> {
       isCollapsed: true,
     );
     const color = Color(0xFF01B4E4);
-    const textStyleButton = TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w700,
-    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -112,7 +130,8 @@ class _FormWidgetState extends State<_FormWidget> {
         const SizedBox(
           height: 5.0,
         ),
-        const TextField(
+        TextField(
+          controller: _loginTextController,
           decoration: textFieldDecorator,
         ),
         const SizedBox(
@@ -125,7 +144,8 @@ class _FormWidgetState extends State<_FormWidget> {
         const SizedBox(
           height: 5.0,
         ),
-        const TextField(
+        TextField(
+          controller: _passwordTextController,
           decoration: textFieldDecorator,
           obscureText: true,
         ),
@@ -134,8 +154,8 @@ class _FormWidgetState extends State<_FormWidget> {
         ),
         Row(
           children: [
-            TextButton(
-              onPressed: () {},
+            ElevatedButton(
+              onPressed: _auth,
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(color),
                 foregroundColor: MaterialStateProperty.all(Colors.white),
@@ -154,11 +174,8 @@ class _FormWidgetState extends State<_FormWidget> {
               width: 20.0,
             ),
             TextButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all(color),
-                textStyle: MaterialStateProperty.all(textStyleButton),
-              ),
+              onPressed: _resetPassword,
+              style: AppButtonStyle.linkButton,
               child: const Text(
                 'Reset password',
               ),
