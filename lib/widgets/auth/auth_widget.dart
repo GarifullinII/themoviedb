@@ -148,6 +148,8 @@ class _FormWidgetState extends State<_FormWidget> {
           controller: _passwordTextController,
           decoration: textFieldDecorator,
           obscureText: true,
+          autocorrect: false,
+          enableSuggestions: false,
         ),
         const SizedBox(
           height: 20.0,
