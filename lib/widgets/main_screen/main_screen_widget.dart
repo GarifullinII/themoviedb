@@ -11,12 +11,6 @@ class MainScreenWidget extends StatefulWidget {
 class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
 
-  static final List _widgetOptions = [
-    const Text('News'),
-    MovieListWidget(),
-    const Text('Serials'),
-  ];
-
   void onSelected(int index) {
     if (_selectedTab == index) return;
     setState(() {
@@ -30,8 +24,13 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
       appBar: AppBar(
         title: const Text('TMDB'),
       ),
-      body: Center(
-        child: _widgetOptions[_selectedTab],
+      body: IndexedStack(
+        index: _selectedTab,
+        children: const [
+          Text('News'),
+          MovieListWidget(),
+          Text('Serials'),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,
