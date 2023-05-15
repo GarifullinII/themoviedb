@@ -79,24 +79,25 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black.withOpacity(
+                          0.2,
+                        ),
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
                           color: Colors.black.withOpacity(
-                            0.2,
+                            0.1,
                           ),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(
-                              0.1,
-                            ),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]),
+                      ],
+                    ),
                     clipBehavior: Clip.hardEdge,
                     child: Row(
                       children: [
@@ -150,7 +151,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10.0),
-                      onTap: () =>_onMovieTap(index),
+                      onTap: () => _onMovieTap(index),
                     ),
                   ),
                 ],
