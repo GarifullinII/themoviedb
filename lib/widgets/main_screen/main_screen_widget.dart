@@ -11,10 +11,10 @@ class MainScreenWidget extends StatefulWidget {
 class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
 
-  static const List _widgetOptions = [
-    Text('News'),
+  static final List _widgetOptions = [
+    const Text('News'),
     MovieListWidget(),
-    Text('Serials'),
+    const Text('Serials'),
   ];
 
   void onSelected(int index) {
