@@ -51,8 +51,8 @@ class _LoginWidget extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {},
-            child: const Text('Get started'),
             style: AppButtonStyle.linkButton,
+            child: const Text('Get started'),
           ),
           const SizedBox(
             height: 10.0,
@@ -64,8 +64,8 @@ class _LoginWidget extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {},
-            child: const Text('Resent'),
             style: AppButtonStyle.linkButton,
+            child: const Text('Resent'),
           ),
           const SizedBox(
             height: 10.0,
@@ -153,9 +153,7 @@ class _FormWidget extends StatelessWidget {
 }
 
 class _AuthButtonWidget extends StatelessWidget {
-  const _AuthButtonWidget({
-    super.key,
-  });
+  const _AuthButtonWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
