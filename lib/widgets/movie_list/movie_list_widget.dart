@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/resources/resources.dart';
+import 'package:themoviedb/widgets/navigation/main_navigation.dart';
 
 class Movie {
   final int id;
@@ -56,7 +57,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 
   void _onMovieTap(int index) {
     final id = _movies[index].id;
-    Navigator.pushNamed(context, '/main_screen/movie_details', arguments: id);
+    Navigator.pushNamed(context, MainNavigationRouteNames.movieDetails, arguments: id);
   }
 
   @override

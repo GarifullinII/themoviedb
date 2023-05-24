@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
+import 'package:themoviedb/widgets/navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
@@ -53,7 +54,7 @@ class AuthModel extends ChangeNotifier {
     }
     await _sessionDataProvider.setSessionId(sessionId);
     if (context.mounted) {
-      unawaited(Navigator.of(context).pushNamed('/main_screen'));
+      unawaited(Navigator.of(context).pushNamed(MainNavigationRouteNames.mainScreen));
     }
   }
 }

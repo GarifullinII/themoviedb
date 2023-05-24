@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../resources/resources.dart';
 import '../elements/radial_percent_widget.dart';
 
