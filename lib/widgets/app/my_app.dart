@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/widgets/app/my_app_model.dart';
 import '../../theme/app_colors.dart';
-import '../auth/auth_widget.dart';
 import '../navigation/main_navigation.dart';
 
 class MyApp extends StatelessWidget {
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.grey,
         ),
       ),
-      home: const AuthWidget(),
       initialRoute: mainNavigation.initialRoute(model.isAuth),
       routes: mainNavigation.routes,
       onGenerateRoute: mainNavigation.onGenerateRoute,

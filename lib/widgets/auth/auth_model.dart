@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
@@ -54,30 +53,7 @@ class AuthModel extends ChangeNotifier {
     }
     await _sessionDataProvider.setSessionId(sessionId);
     if (context.mounted) {
-      unawaited(Navigator.of(context).pushNamed(MainNavigationRouteNames.mainScreen));
+      unawaited(Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen));
     }
-  }
-}
-
-class AuthProvider extends InheritedNotifier {
-  final AuthModel model;
-  const AuthProvider({
-    Key? key,
-    required this.model,
-    required Widget child,
-  }) : super(
-          key: key,
-          notifier: model,
-          child: child,
-        );
-
-  static AuthProvider? watch(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AuthProvider>();
-  }
-
-  static AuthProvider? read(BuildContext context) {
-    final widget =
-        context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
-    return widget is AuthProvider ? widget : null;
   }
 }
