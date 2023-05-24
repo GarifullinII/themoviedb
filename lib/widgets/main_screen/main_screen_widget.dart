@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/widgets/movie_list/movie_list_widget.dart';
 
+import '../news/news_widget.dart';
+import '../tv_show_list/tv_show_list_widget.dart';
+
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
 
@@ -26,10 +29,10 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
       ),
       body: IndexedStack(
         index: _selectedTab,
-        children: const [
-          Text('News'),
-          MovieListWidget(),
-          Text('Serials'),
+        children: [
+          const NewsWidget(),
+          const MovieListWidget(),
+          TWShowListWidget(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
