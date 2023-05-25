@@ -36,8 +36,20 @@ class AuthModel extends ChangeNotifier {
         username: login,
         password: password,
       );
+    } on ApiClientException catch (e) {
+      switch (e.type) {
+        case ApiClientExceptionType.Network:
+          _errorMessage = 'Server is not available';
+          break;
+        case ApiClientExceptionType.Auth:
+          _errorMessage = 'Wrong login or password!';
+          break;
+        case ApiClientExceptionType.Other:
+          _errorMessage = 'Error! Try again!';
+          break;
+      }
     } catch (e) {
-      _errorMessage = 'Wrong login or password!';
+      _errorMessage = 'Try again!';
     }
     _isAuthProgress = false;
 
@@ -53,7 +65,8 @@ class AuthModel extends ChangeNotifier {
     }
     await _sessionDataProvider.setSessionId(sessionId);
     if (context.mounted) {
-      unawaited(Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen));
+      unawaited(Navigator.of(context)
+          .pushReplacementNamed(MainNavigationRouteNames.mainScreen));
     }
   }
 }
