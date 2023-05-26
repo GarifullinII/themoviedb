@@ -6,11 +6,13 @@ import '../auth/auth_model.dart';
 import '../auth/auth_widget.dart';
 import '../main_screen/main_screen_widget.dart';
 import '../movie_details/movie_details_widget.dart';
+import '../movie_trailer/movie_trailer_widget.dart';
 
 abstract class MainNavigationRouteNames {
   static const auth = 'auth';
   static const mainScreen = '/';
   static const movieDetails = '/movie_details';
+  static const movieTrailerWidget = '/movie_details/trailer';
 }
 
 class MainNavigation {
@@ -20,15 +22,14 @@ class MainNavigation {
 
   final routes = <String, Widget Function(BuildContext)>{
     MainNavigationRouteNames.auth: (context) => NotifierProvider(
-          create: () => AuthModel(),
-          child: const AuthWidget(),
-        ),
+      create: () => AuthModel(),
+      child: const AuthWidget(),
+    ),
     MainNavigationRouteNames.mainScreen: (context) => NotifierProvider(
-          create: () => MainScreenModel(),
-          child: const MainScreenWidget(),
-        ),
+      create: () => MainScreenModel(),
+      child: const MainScreenWidget(),
+    ),
   };
-
   Route<Object> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case MainNavigationRouteNames.movieDetails:
@@ -40,8 +41,14 @@ class MainNavigation {
             child: const MovieDetailsWidget(),
           ),
         );
+      case MainNavigationRouteNames.movieTrailerWidget:
+        final arguments = settings.arguments;
+        final youtubeKey = arguments is String ? arguments : '';
+        return MaterialPageRoute(
+          builder: (context) => MovieTrailerWidget(youtubeKey: youtubeKey),
+        );
       default:
-        const widget = Text('Navigation error!');
+        const widget = Text('Navigation error!!!');
         return MaterialPageRoute(builder: (context) => widget);
     }
   }

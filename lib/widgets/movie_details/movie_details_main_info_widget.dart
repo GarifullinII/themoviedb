@@ -4,6 +4,7 @@ import 'package:themoviedb/widgets/elements/radial_percent_widget.dart';
 import '../../domain/api_client/api_client.dart';
 import '../../domain/entity/movie_details_credits.dart';
 import '../../library/inherited/notifier_provider.dart';
+import '../navigation/main_navigation.dart';
 import 'movie_details_model.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
@@ -11,29 +12,41 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _TopPosterWidget(),
-        Padding(
+        const _TopPosterWidget(),
+        const Padding(
           padding: EdgeInsets.all(20.0),
           child: _MovieNameWidget(),
         ),
-        _ScoreWidget(),
-        _SummeryWidget(),
+        const _ScoreWidget(),
+        const _SummeryWidget(),
         Padding(
-          padding: EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
           child: _OverviewWidget(),
         ),
-        Padding(
+        const Padding(
           padding: EdgeInsets.all(10.0),
           child: _DescriptionWidget(),
         ),
-        SizedBox(
-          height: 30.0,
+        const SizedBox(height: 30),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: _PeopleWidgets(),
         ),
-        _PeopleWidgets(),
       ],
+    );
+  }
+
+  Text _OverviewWidget() {
+    return const Text(
+      'Overview',
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+      ),
     );
   }
 }
@@ -49,24 +62,6 @@ class _DescriptionWidget extends StatelessWidget {
     return Text(
       model?.movieDetails?.overview ?? '',
       style: const TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-  }
-}
-
-class _OverviewWidget extends StatelessWidget {
-  const _OverviewWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const Text(
-      'Overview',
-      style: TextStyle(
         color: Colors.white,
         fontSize: 16,
         fontWeight: FontWeight.w400,
@@ -147,6 +142,9 @@ class _ScoreWidget extends StatelessWidget {
     final movieDetails =
         NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
     var voteAverage = movieDetails?.voteAverage ?? 0;
+    final videos = movieDetails?.videos.results
+        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
+    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
     voteAverage = voteAverage * 10;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -173,15 +171,20 @@ class _ScoreWidget extends StatelessWidget {
           ),
         ),
         Container(width: 1, height: 15, color: Colors.grey),
-        TextButton(
-          onPressed: () {},
+        trailerKey != null
+            ? TextButton(
+          onPressed: () => Navigator.of(context).pushNamed(
+            MainNavigationRouteNames.movieTrailerWidget,
+            arguments: trailerKey,
+          ),
           child: const Row(
             children: [
               Icon(Icons.play_arrow),
               Text('Play Trailer'),
             ],
           ),
-        ),
+        )
+            : const SizedBox.shrink(),
       ],
     );
   }
