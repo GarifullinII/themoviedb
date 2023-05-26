@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:themoviedb/domain/entity/popular_movie_response.dart';
+import '../entity/movie_details.dart';
 
 enum ApiClientExceptionType { Network, Auth, Other }
 
@@ -43,10 +43,10 @@ class ApiClient {
   }
 
   Future<T> _get<T>(
-      String path,
-      T Function(dynamic json) parser, [
-        Map<String, dynamic>? parameters,
-      ]) async {
+    String path,
+    T Function(dynamic json) parser, [
+    Map<String, dynamic>? parameters,
+  ]) async {
     final url = _makeUri(path, parameters);
     try {
       final request = await _client.getUrl(url);
@@ -65,11 +65,11 @@ class ApiClient {
   }
 
   Future<T> _post<T>(
-      String path,
-      Map<String, dynamic> bodyParameters,
-      T Function(dynamic json) parser, [
-        Map<String, dynamic>? urlParameters,
-      ]) async {
+    String path,
+    Map<String, dynamic> bodyParameters,
+    T Function(dynamic json) parser, [
+    Map<String, dynamic>? urlParameters,
+  ]) async {
     try {
       final url = _makeUri(path, urlParameters);
       final request = await _client.postUrl(url);
@@ -97,6 +97,7 @@ class ApiClient {
       final token = jsonMap['request_token'] as String;
       return token;
     }
+
     final result = _get(
       '/authentication/token/new',
       parser,
@@ -111,6 +112,7 @@ class ApiClient {
       final response = PopularMovieResponse.fromJson(jsonMap);
       return response;
     }
+
     final result = _get(
       '/movie/popular',
       parser,
@@ -123,12 +125,14 @@ class ApiClient {
     return result;
   }
 
-  Future<PopularMovieResponse> searchMovie(int page, String locale, String query) async {
+  Future<PopularMovieResponse> searchMovie(
+      int page, String locale, String query) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularMovieResponse.fromJson(jsonMap);
       return response;
     }
+
     final result = _get(
       '/search/movie',
       parser,
@@ -138,6 +142,26 @@ class ApiClient {
         'language': locale,
         'query': query,
         'include_adult': true.toString(),
+      },
+    );
+    return result;
+  }
+
+  Future<MovieDetails> movieDetails(
+    int movieId,
+    String locale,
+  ) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieDetails.fromJson(jsonMap);
+      return response;
+    }
+    final result = _get(
+      '/movie/$movieId',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'language': locale,
       },
     );
     return result;
@@ -153,6 +177,7 @@ class ApiClient {
       final token = jsonMap['request_token'] as String;
       return token;
     }
+
     final parameters = <String, dynamic>{
       'username': username,
       'password': password,
@@ -208,4 +233,3 @@ extension HttpClientResponseJsonDecode on HttpClientResponse {
     }).then<dynamic>((v) => json.decode(v));
   }
 }
-
