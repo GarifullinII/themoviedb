@@ -130,7 +130,7 @@ class ApiClient {
       return response;
     }
     final result = _get(
-      '/movie/popular',
+      '/search/movie',
       parser,
       <String, dynamic>{
         'api_key': _apiKey,
