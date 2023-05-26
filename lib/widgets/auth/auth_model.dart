@@ -31,42 +31,43 @@ class AuthModel extends ChangeNotifier {
     _isAuthProgress = true;
     notifyListeners();
     String? sessionId;
+    int? accountId;
     try {
       sessionId = await _apiClient.auth(
         username: login,
         password: password,
       );
+      accountId = await _apiClient.getAccountInfo(sessionId);
     } on ApiClientException catch (e) {
       switch (e.type) {
         case ApiClientExceptionType.Network:
-          _errorMessage = 'Server is not available';
+          _errorMessage =
+          'Server is not available. Check your internet connection';
           break;
         case ApiClientExceptionType.Auth:
-          _errorMessage = 'Wrong login or password!';
+          _errorMessage = 'Wrong login password!';
           break;
         case ApiClientExceptionType.Other:
-          _errorMessage = 'Error! Try again!';
+          _errorMessage = 'Error. try again';
           break;
       }
-    } catch (e) {
-      _errorMessage = 'Try again!';
     }
     _isAuthProgress = false;
-
     if (_errorMessage != null) {
       notifyListeners();
       return;
     }
 
-    if (sessionId == null) {
-      _errorMessage = 'Unknown error';
+    if (sessionId == null || accountId == null) {
+      _errorMessage = 'Unknown error, please try again';
       notifyListeners();
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
+    await _sessionDataProvider.setAccountId(accountId);
     if (context.mounted) {
-      unawaited(Navigator.of(context)
-          .pushReplacementNamed(MainNavigationRouteNames.mainScreen));
+      Navigator.of(context)
+          .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
     }
   }
 }

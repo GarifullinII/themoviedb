@@ -93,6 +93,16 @@ class _TopPosterWidget extends StatelessWidget {
                 ? Image.network(ApiClient.imageUrl(posterPath))
                 : const SizedBox.shrink(),
           ),
+          Positioned(
+            top: 5,
+            right: 5,
+            child: IconButton(
+              onPressed: () => model?.toggleFavorite(),
+              icon: Icon(model?.isFavorite == true
+                  ? Icons.favorite
+                  : Icons.favorite_outline),
+            ),
+          ),
         ],
       ),
     );
@@ -177,10 +187,10 @@ class _ScoreWidget extends StatelessWidget {
             MainNavigationRouteNames.movieTrailerWidget,
             arguments: trailerKey,
           ),
-          child: const Row(
+          child: Row(
             children: [
-              Icon(Icons.play_arrow),
-              Text('Play Trailer'),
+              const Icon(Icons.play_arrow),
+              const Text('Play Trailer'),
             ],
           ),
         )
