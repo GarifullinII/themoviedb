@@ -160,6 +160,7 @@ class ApiClient {
       '/movie/$movieId',
       parser,
       <String, dynamic>{
+        'append_to_response': 'credits',
         'api_key': _apiKey,
         'language': locale,
       },
@@ -195,11 +196,11 @@ class ApiClient {
   Future<String> _makeSession({
     required String requestToken,
   }) async {
-    final parser = (dynamic json) {
+    parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final sessionId = jsonMap['session_id'] as String;
       return sessionId;
-    };
+    }
     final parameters = <String, dynamic>{
       'request_token': requestToken,
     };

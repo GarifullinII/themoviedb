@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/resources/resources.dart';
 import 'package:themoviedb/widgets/elements/radial_percent_widget.dart';
 
 import '../../domain/api_client/api_client.dart';
+import '../../domain/entity/movie_details_credits.dart';
 import '../../library/inherited/notifier_provider.dart';
 import 'movie_details_model.dart';
 
@@ -40,14 +40,15 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
 
 class _DescriptionWidget extends StatelessWidget {
   const _DescriptionWidget({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'Léon, the top hit man in New York, has earned a rep as an effective "cleaner". But when his next-door neighbors are wiped out by a loose-cannon DEA agent, he becomes the unwilling custodian of 12-year-old Mathilda. Before long, Mathilda\'s thoughts turn to revenge, and she considers following in Léon\'s footsteps.',
-      style: TextStyle(
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    return Text(
+      model?.movieDetails?.overview ?? '',
+      style: const TextStyle(
         color: Colors.white,
         fontSize: 16,
         fontWeight: FontWeight.w400,
@@ -240,62 +241,78 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    var crew = model?.movieDetails?.credits.crew;
+    if (crew == null || crew.isEmpty) return const SizedBox.shrink();
+    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
+    var crewChunks = <List<Employee>>[];
+    for (var i = 0; i < crew.length; i += 2) {
+      crewChunks.add(
+        crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
+      );
+    }
+    return Column(
+      children: crewChunks
+          .map(
+            (chunk) => Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: _PeopleWidgetsRow(employes: chunk),
+        ),
+      )
+          .toList(),
+    );
+  }
+}
+
+class _PeopleWidgetsRow extends StatelessWidget {
+  final List<Employee> employes;
+  const _PeopleWidgetsRow({
+    Key? key,
+    required this.employes,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: employes
+          .map(
+            (employee) => _PeopleWidgetsRowItem(
+          employee: employee,
+        ),
+      )
+          .toList(),
+    );
+  }
+}
+
+class _PeopleWidgetsRowItem extends StatelessWidget {
+  final Employee employee;
+  const _PeopleWidgetsRowItem({
+    Key? key,
+    required this.employee,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     const nameStyle = TextStyle(
       color: Colors.white,
       fontSize: 16,
       fontWeight: FontWeight.w400,
     );
-    const jobStyle = TextStyle(
+    const jobTilteStyle = TextStyle(
       color: Colors.white,
       fontSize: 16,
       fontWeight: FontWeight.w400,
     );
-    return const Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobStyle),
-              ],
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 20.0,
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobStyle),
-              ],
-            ),
-          ],
-        ),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(employee.name, style: nameStyle),
+          Text(employee.job, style: jobTilteStyle),
+        ],
+      ),
     );
   }
 }
