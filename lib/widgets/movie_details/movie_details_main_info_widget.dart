@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:themoviedb/resources/resources.dart';
 import 'package:themoviedb/widgets/elements/radial_percent_widget.dart';
 
+import '../../domain/api_client/api_client.dart';
+import '../../library/inherited/notifier_provider.dart';
+import 'movie_details_model.dart';
+
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({Key? key}) : super(key: key);
 
@@ -75,20 +79,26 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Stack(
-      children: [
-        Image(
-          image: AssetImage(AppImages.leontop),
-        ),
-        Positioned(
-          left: 20,
-          top: 20,
-          bottom: 20,
-          child: Image(
-            image: AssetImage(AppImages.leon),
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final backdropPath = model?.movieDetails?.backdropPath;
+    final posterPath = model?.movieDetails?.posterPath;
+    return AspectRatio(
+      aspectRatio: 390 / 219,
+      child: Stack(
+        children: [
+          backdropPath != null
+              ? Image.network(ApiClient.imageUrl(backdropPath))
+              : const SizedBox.shrink(),
+          Positioned(
+            top: 20,
+            left: 20,
+            bottom: 20,
+            child: posterPath != null
+                ? Image.network(ApiClient.imageUrl(posterPath))
+                : const SizedBox.shrink(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -98,26 +108,31 @@ class _MovieNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      maxLines: 3,
-      textAlign: TextAlign.center,
-      text: const TextSpan(
-        children: [
-          TextSpan(
-            text: 'Leon',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    var year = model?.movieDetails?.releaseDate?.year.toString();
+    year = year != null ? ' ($year)' : '';
+    return Center(
+      child: RichText(
+        maxLines: 3,
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: model?.movieDetails?.title ?? '',
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          TextSpan(
-            text: ' (1994)',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+            TextSpan(
+              text: year,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -128,61 +143,41 @@ class _ScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final movieDetails =
+        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    var voteAverage = movieDetails?.voteAverage ?? 0;
+    voteAverage = voteAverage * 10;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TextButton(
           onPressed: () {},
-          child: const Row(
+          child: Row(
             children: [
               SizedBox(
-                width: 60.0,
-                height: 60.0,
+                width: 40,
+                height: 40,
                 child: RadialPercentWidget(
-                  percent: 0.92,
-                  fillColor: Color.fromARGB(255, 10, 23, 25),
-                  lineColor: Color.fromARGB(255, 37, 203, 103),
-                  freeColor: Color.fromARGB(255, 25, 54, 31),
+                  percent: voteAverage / 100,
+                  fillColor: const Color.fromARGB(255, 10, 23, 25),
+                  lineColor: const Color.fromARGB(255, 37, 203, 103),
+                  freeColor: const Color.fromARGB(255, 25, 54, 31),
                   lineWidth: 3,
-                  child: Text(
-                    '92 %',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: Text(voteAverage.toStringAsFixed(0)),
                 ),
               ),
-              SizedBox(
-                width: 10.0,
-              ),
-              Text(
-                'User Score',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              const SizedBox(width: 10),
+              const Text('User Score'),
             ],
           ),
         ),
-        Container(
-          width: 1,
-          height: 15,
-          color: Colors.grey,
-        ),
+        Container(width: 1, height: 15, color: Colors.grey),
         TextButton(
           onPressed: () {},
           child: const Row(
             children: [
-              Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-              ),
-              Text(
-                'Play Trayler',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              Icon(Icons.play_arrow),
+              Text('Play Trailer'),
             ],
           ),
         ),
@@ -196,15 +191,40 @@ class _SummeryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: Color.fromRGBO(22, 21, 25, 1.0),
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    if (model == null) return const SizedBox.shrink();
+    var texts = <String>[];
+    final releaseDate = model.movieDetails?.releaseDate;
+    if (releaseDate != null) {
+      texts.add(model.stringFromDate(releaseDate));
+    }
+    final productionCountries = model.movieDetails?.productionCountries;
+    if (productionCountries != null && productionCountries.isNotEmpty) {
+      texts.add('(${productionCountries.first.iso})');
+    }
+    final runtime = model.movieDetails?.runtime ?? 0;
+    final duration = Duration(minutes: runtime);
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    texts.add('${hours}h ${minutes}m');
+    final genres = model.movieDetails?.genres;
+    if (genres != null && genres.isNotEmpty) {
+      var genresNames = <String>[];
+      for (var genr in genres) {
+        genresNames.add(genr.name);
+      }
+      texts.add(genresNames.join(', '));
+    }
+
+    return ColoredBox(
+      color: const Color.fromRGBO(22, 21, 25, 1.0),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         child: Text(
-          'R, 11/18/1994 (US) 1h 51m Crime, Drama, Action',
+          texts.join(' '),
           maxLines: 3,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w400,
