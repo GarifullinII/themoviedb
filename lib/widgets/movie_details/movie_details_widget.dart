@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:themoviedb/widgets/movie_details/movie_details_main_info_widget.dart';
 import 'package:themoviedb/widgets/movie_details/movie_details_main_screen_cast_widget.dart';
 import '../../library/inherited/notifier_provider.dart';
+import '../app/my_app_model.dart';
 import 'movie_details_model.dart';
 
 class MovieDetailsWidget extends StatefulWidget {
@@ -13,9 +14,16 @@ class MovieDetailsWidget extends StatefulWidget {
 
 class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   @override
+  void initState() {
+    super.initState();
+    final model = NotifierProvider.read<MovieDetailsModel>(context);
+    final appModel = Provider.read<MyAppModel>(context);
+    model?.onSessionExpired = () => appModel?.resetSession(context);
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     NotifierProvider.read<MovieDetailsModel>(context)?.setupLocale(context);
   }
 
@@ -54,10 +62,10 @@ class _BodyWidget extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
     return ListView(
-      children: const [
-        MovieDetailsMainInfoWidget(),
-        SizedBox(height: 30),
-        MovieDetailsMainScreenCastWidget(),
+      children: [
+        const MovieDetailsMainInfoWidget(),
+        const SizedBox(height: 30),
+        const MovieDetailsMainScreenCastWidget(),
       ],
     );
   }
